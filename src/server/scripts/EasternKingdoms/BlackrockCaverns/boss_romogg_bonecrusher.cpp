@@ -25,12 +25,22 @@
 
 enum Spells
 {
-    SPELL_CALL_FOR_HELP = 82137, SPELL_QUAKE = 75272, SPELL_CHAINS_OF_WOE = 75539, SPELL_CHAINS_OF_WOE_VISUAL = 75441, SPELL_CHAINS_OF_WOE_AURA = 82192, SPELL_THE_SKULLCRACKER = 75543, SPELL_WOUNDING_STRIKE = 69651,
+	SPELL_CALL_FOR_HELP                           = 82137,
+	SPELL_QUAKE                                   = 75272,
+	SPELL_CHAINS_OF_WOE                           = 75539,
+	SPELL_CHAINS_OF_WOE_VISUAL                    = 75441,
+	SPELL_CHAINS_OF_WOE_AURA                      = 82192,
+	SPELL_THE_SKULLCRACKER                        = 75543,
+	SPELL_WOUNDING_STRIKE                         = 75571,
 };
 
-enum Events
-{
-    EVENT_QUAKE = 1, EVENT_CHAINS_OF_WOE = 2, EVENT_WOUNDING_STRIKE = 3,
+enum events
+{   
+    EVENT_NONE,
+    EVENT_QUAKE,
+    EVENT_SKULLCRAKER_P1,
+    EVENT_SKULLCRAKER_P2,
+    EVENT_WOUNDING_STRIKE,
 };
 
 class boss_romogg_bonecrusher: public CreatureScript
@@ -59,28 +69,20 @@ public:
         bool castSkullCracker;
         Creature* chainsOfWoe;
 
-        void Reset ()
+        void Reset() 
         {
-            me->GetMotionMaster()->MoveTargetedHome();
-            castSkullCracker = false;
-
-            if (chainsOfWoe != NULL)
-                chainsOfWoe->DespawnOrUnsummon();
-
-            chainsOfWoe = NULL;
-
-            DespawnCreatures(NPC_ANGERED_EARTH);
+            events.Reset();
+            summons.DespawnAll();
+            firstSkull = false;
+            secondSkull = false;
+            me->GetPosition(&chainPos);
         }
 
-        void EnterCombat (Unit* /*who*/)
+        void EnterCombat(Unit* who)
         {
-            me->MonsterYell("Dat's what you get! Noting!", LANG_UNIVERSAL, NULL);
-
-            events.ScheduleEvent(EVENT_QUAKE, 13000);
-            events.ScheduleEvent(EVENT_CHAINS_OF_WOE, 17000);
-            events.ScheduleEvent(EVENT_WOUNDING_STRIKE, 7000);
-
-            DoCastAOE(SPELL_CALL_FOR_HELP);
+            DoCast(me, SPELL_CALL_FOR_HELP);
+            events.ScheduleEvent(EVENT_QUAKE, urand(40000, 60000), 0, 0);
+            events.ScheduleEvent(EVENT_WOUNDING_STRIKE, urand(2000, 4000), 0, 0);
         }
 
         void UpdateAI (const uint32 diff)
