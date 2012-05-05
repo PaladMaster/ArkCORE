@@ -26,7 +26,12 @@ enum eSpells
 {
     SPELL_CIILLING_BREATH_N       = 88308,
     SPELL_CIILLING_BREATH_H       = 93989,
+    SPELL_CALL_OF_WIND            = 88772,
 };
+enum Events
+{
+   EVENT_CHILLING_BREATH = 1,
+}
 
 class boss_altairus : public CreatureScript
 {
@@ -64,6 +69,7 @@ public:
         {
             if (instance)
             {
+                events.ScheduleEvent(EVENT_CHILLING_BREATH, urand(5000, 6000), 0, 0);
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_ADD, me);
                 instance->SetData(DATA_ALTAIRUS, IN_PROGRESS);
             }
