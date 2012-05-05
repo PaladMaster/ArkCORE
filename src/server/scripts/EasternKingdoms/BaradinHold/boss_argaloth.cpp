@@ -97,9 +97,10 @@ public:
                         events.RescheduleEvent(EVENT_CONSUMING_DARKNESS, urand(24000, 26000));
                         break;
                 case EVENT_METEOR_SLASH:
-                    DoCast(SPELL_METEOR_SLASH);
-                    events.RescheduleEvent(EVENT_METEOR_SLASH, 15 * IN_MILLISECONDS);
-                    break;
+                        me->CastSpell(me, 88949, true);
+                        DoCast(SPELL_METEOR_SLASH);
+                        events.RescheduleEvent(EVENT_METEOR_SLASH, urand(16000, 18000));
+                        break;
                 case EVENT_BERSERK:
                     DoCast(me, SPELL_BERSERK);
                     break;
